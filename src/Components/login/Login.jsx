@@ -1,5 +1,7 @@
 import { useState } from "react";
 import {toast} from "react-toastify"
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../lib/firebase";
 
 export default function Login() {
 
@@ -11,14 +13,14 @@ export default function Login() {
 
     const [selectedImage, setSelectedImage] = useState(presetProfilePictures[0]);
 
-    const handleRegister = e =>{
+    const handleRegister = async e =>{
         e.preventDefault();
         const formData = new FormData(e.target);
 
         const {username,email,password} = Object.fromEntries(formData);
 
         try{
-
+            const res = await createUserWithEmailAndPassword(auth,email,password);
         }
         catch(err){
             console.log(err);
