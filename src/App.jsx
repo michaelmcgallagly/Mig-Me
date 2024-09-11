@@ -10,7 +10,11 @@ function App() {
   const currentUser = false;
 
   return (
-<div className="w-[90vw] h-[90vh] bg-[#FFFFFF] bg-opacity-50 backdrop-blur-lg backdrop-saturate-150 rounded-lg border border-white border-opacity-10 flex">
+<div className=" bg-[#FFFFFF] bg-opacity-50 backdrop-blur-lg backdrop-saturate-150 rounded-lg border border-white border-opacity-10 flex"
+ style={{
+    width: 'clamp(300px, 90vw, 1200px)',
+    height: 'clamp(400px, 90vh, 800px)',
+ }}>
   {currentUser ? (
     <>
       <List/>
