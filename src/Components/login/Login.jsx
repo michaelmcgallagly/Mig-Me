@@ -3,13 +3,14 @@ import {toast} from "react-toastify"
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
 import {doc, setDoc} from "firebase/firestore"
+import uploadFiles from "../../lib/uploadFiles";
 
 export default function Login() {
 
     const presetProfilePictures =[
-        "/pfp1.png",
-        "/pfp2.png",
-        "/pfp3.png"
+        "https://firebasestorage.googleapis.com/v0/b/migme-be891.appspot.com/o/pfp1.png?alt=media&token=28d79abe-84d5-4a8e-8135-7083b7f2b14a",
+        "https://firebasestorage.googleapis.com/v0/b/migme-be891.appspot.com/o/pfp2.png?alt=media&token=855c98a3-3490-4623-96ec-3035d1a1f28a",
+        "https://firebasestorage.googleapis.com/v0/b/migme-be891.appspot.com/o/pfp3.png?alt=media&token=5e2198ab-b68e-4638-8a94-84251213bec8"
     ]
 
     const [selectedImage, setSelectedImage] = useState(presetProfilePictures[0]);
@@ -23,9 +24,11 @@ export default function Login() {
         try{
             const res = await createUserWithEmailAndPassword(auth,email,password);
 
+            const imgUrl = selectedImage;
             await setDoc(doc(db,"users", res.user.uid),{
                 username,
                 email,
+                avatar:imgUrl,
                 id: res.user.uid
             });
 
