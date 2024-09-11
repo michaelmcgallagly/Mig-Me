@@ -1,7 +1,8 @@
 import { useState } from "react";
 import {toast} from "react-toastify"
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../lib/firebase";
+import { auth, db } from "../../lib/firebase";
+import {doc, setDoc} from "firebase/firestore"
 
 export default function Login() {
 
@@ -21,6 +22,20 @@ export default function Login() {
 
         try{
             const res = await createUserWithEmailAndPassword(auth,email,password);
+
+            await setDoc(doc(db,"users", res.user.uid),{
+                username,
+                email,
+                id: res.user.uid
+            });
+
+            await setDoc(doc(db,"userchats", res.user.uid),{
+                chats:[]
+            });
+
+            toast.success("Successfully created user");
+
+
         }
         catch(err){
             console.log(err);
@@ -56,7 +71,7 @@ export default function Login() {
                     <input type="text" placeholder="Username" name="username" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
                     <input type="text" placeholder="E-Mail" name="email" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
                     <input type="password" placeholder="Password" name="password" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
-                    <button className="w-[77.5%] p-5 border-none bg-[#8c52ff] color-white rounded-md font-bold">Sign Up</button>
+                    <button className="w-[70%] p-5 border-none bg-[#8c52ff] color-white rounded-md font-bold">Sign Up</button>
                 </form>
         </div>
     </div>
