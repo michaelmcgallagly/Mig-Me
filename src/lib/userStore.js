@@ -1,4 +1,4 @@
-import { doc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import {create} from 'zustand'
 import { db } from './firebase';
 
@@ -22,5 +22,5 @@ export const useUserStore = create((set) => ({
         }catch(err){
             return set({currentUser:null, isLoading:false});
         }
-    }
+    },
 }))

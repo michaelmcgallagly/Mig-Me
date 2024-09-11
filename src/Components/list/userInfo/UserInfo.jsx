@@ -1,3 +1,5 @@
+import { auth } from "../../../lib/firebase";
+
 export default function UserInfo() {
   return (
     <div className="p-5 flex items-center justify-between border-b border-[#D5A9A9]">
@@ -6,7 +8,7 @@ export default function UserInfo() {
             <h2>John Doe</h2>
 
         </div>
-        <button className="px-5 py-2.5 bg-[#C62828] bg-opacity-55 text-white border-none rounded-md cursor-pointer transition-colors duration-300 hover:bg-red-700">LogOut</button>
+        <button className="px-5 py-2.5 bg-[#C62828] bg-opacity-55 text-white border-none rounded-md cursor-pointer transition-colors duration-300 hover:bg-red-700" onClick={()=>auth.signOut()}>LogOut</button>
 
     </div>
   )

@@ -1,4 +1,4 @@
-import { useState,useEffect } from 'react'
+import {useEffect } from 'react'
 import Chat from './Components/chat/Chat'
 import List from './Components/list/List'
 import Login from './Components/login/Login'
@@ -15,7 +15,7 @@ function App() {
 
   useEffect(() => {
     const unSub = onAuthStateChanged(auth,(user)=>{
-      fetchUserInfo(user.uid);
+      fetchUserInfo(user?.uid);
     });
 
     return ()=>{
