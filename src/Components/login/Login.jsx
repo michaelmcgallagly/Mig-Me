@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {toast} from "react-toastify"
 
 export default function Login() {
 
@@ -9,6 +10,22 @@ export default function Login() {
     ]
 
     const [selectedImage, setSelectedImage] = useState(presetProfilePictures[0]);
+
+    const handleRegister = e =>{
+        e.preventDefault();
+        const formData = new FormData(e.target);
+
+        const {username,email,password} = Object.fromEntries(formData);
+
+        try{
+
+        }
+        catch(err){
+            console.log(err);
+            toast.error(err.message);
+        }
+
+    }
 
   return (
     <>
@@ -24,7 +41,7 @@ export default function Login() {
         <div className="h-[80%] w-[2px] bg-[#D5A9A9]"></div>
         <div className="flex-1 flex flex-col items-center gap-5">
             <h2>Register Account</h2>
-                <form className="flex flex-col items-center justify-center gap-5">
+                <form className="flex flex-col items-center justify-center gap-5" onSubmit={handleRegister}>
                     <div className="flex gap-4">
                     {presetProfilePictures.map((image,index)=>(
                         <div key={index} className={`w-24 h-24 border-2 rounded-full overflow-hidden cursor-pointer ${selectedImage === image ? "border-[#8c52ff]" : "border-white"} hover:border-[#8c52ff]`}

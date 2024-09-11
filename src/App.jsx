@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Chat from './Components/chat/Chat'
 import List from './Components/list/List'
 import Login from './Components/login/Login'
+import Notification from './Components/notification/Notification'
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
     ):(
       <Login/>
     )}
+  <Notification/>
 
 </div>
     
