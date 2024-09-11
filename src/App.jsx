@@ -1,13 +1,31 @@
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import Chat from './Components/chat/Chat'
 import List from './Components/list/List'
 import Login from './Components/login/Login'
 import Notification from './Components/notification/Notification'
+import { onAuthStateChanged } from 'firebase/auth'
+import { useUserStore } from './lib/userStore'
+import { auth } from './lib/firebase'
 
 
 function App() {
 
-  const currentUser = false;
+  const {currentUser, isLoading, fetchUserInfo} = useUserStore()
+
+
+  useEffect(() => {
+    const unSub = onAuthStateChanged(auth,(user)=>{
+      fetchUserInfo(user.uid);
+    });
+
+    return ()=>{
+      unSub();
+    }
+  },[fetchUserInfo]);
+
+  console.log(currentUser);
+
+  if(isLoading) return <div className='p-7 bg-[#FFFFFF] bg-opacity-50 backdrop-blur-lg backdrop-saturate-150 rounded-lg text-lg'>Loading...</div>
 
   return (
 <div className=" bg-[#FFFFFF] bg-opacity-50 backdrop-blur-lg backdrop-saturate-150 rounded-lg border border-white border-opacity-10 flex"
