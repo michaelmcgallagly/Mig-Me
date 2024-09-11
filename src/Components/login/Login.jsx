@@ -1,4 +1,15 @@
+import { useState } from "react";
+
 export default function Login() {
+
+    const presetProfilePictures =[
+        "/pfp1.png",
+        "/pfp2.png",
+        "/pfp3.png"
+    ]
+
+    const [selectedImage, setSelectedImage] = useState(presetProfilePictures[0]);
+
   return (
     <>
     <div className="w-full h-full flex items-center gap-8">
@@ -14,11 +25,15 @@ export default function Login() {
         <div className="flex-1 flex flex-col items-center gap-5">
             <h2>Register Account</h2>
                 <form className="flex flex-col items-center justify-center gap-5">
-                    <label htmlFor="file" className="w-[100%] flex items-center justify-between cursor-pointer">
-                        <img src="https://static.vecteezy.com/system/resources/previews/004/511/281/original/default-avatar-photo-placeholder-profile-picture-vector.jpg" alt="user profile picture" className="w-12 h-12 rounded-lg object-cover opacity-60"/> 
-                        Upload an Image
-                    </label>
-                    <input type="file" id="file" style={{display: "none"}}/>
+                    <div className="flex gap-4">
+                    {presetProfilePictures.map((image,index)=>(
+                        <div key={index} className={`w-24 h-24 border rounded-full overflow-hidden cursor-pointer hover:border-blue-400`}
+                        onClick={()=> setSelectedImage(image)}
+                        >
+                            <img src={image} alt="profile picture" className="w-full h-full object-cover"/>
+                        </div>
+                    ))}
+                    </div>
                     <input type="text" placeholder="Username" name="username" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
                     <input type="text" placeholder="E-Mail" name="email" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
                     <input type="password" placeholder="Password" name="password" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
