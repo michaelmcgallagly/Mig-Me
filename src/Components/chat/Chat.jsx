@@ -9,6 +9,16 @@ export default function Chat() {
                 </div>
             </div>
         </div>
+
+        <div className="center">
+
+        </div>
+        <div className="p-5 flex items-center justify-between border-t border-[#D5A9A9] gap-5 mt-auto">
+            <input type="text" placeholder="Type a message..."    className="flex-1 bg-white border-none outline-none text-[#8c52ff] p-5 rounded-lg text-base"/>
+            <button className="py-2.5 px-5 border-none rounded cursor-pointer"><i className="fa-regular fa-paper-plane"></i></button>
+
+        </div>
+    
     </div>
     
   )
