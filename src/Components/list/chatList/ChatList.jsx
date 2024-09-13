@@ -3,7 +3,7 @@ import { useUserStore } from "../../../lib/userStore"
 import "./chatList.css"
 import { db } from "../../../lib/firebase";
 import {useState,useEffect} from "react"
-import AddUser from ".././userSearch/UserSearch.jsx";
+import UserSearch from ".././userSearch/UserSearch.jsx";
 
 
 export default function ChatList() {
@@ -60,7 +60,7 @@ export default function ChatList() {
 
       
 
-        {addMode &&  <AddUser/>}
+        {addMode &&  <UserSearch/>}
     </div>
   )
 }
