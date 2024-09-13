@@ -3,7 +3,6 @@ import {toast} from "react-toastify"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
 import {doc, setDoc} from "firebase/firestore"
-import uploadFiles from "../../lib/uploadFiles";
 
 export default function Login() {
 
