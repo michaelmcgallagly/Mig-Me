@@ -1,4 +1,4 @@
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useUserStore } from "../../../lib/userStore"
 import "./chatList.css"
 import { db } from "../../../lib/firebase";
@@ -10,8 +10,15 @@ export default function ChatList() {
   const currentUser = useUserStore();
 
   useEffect(() =>{
-    const unSub = onSnapshot(doc(db,"userchats", currentUser.id), (doc) =>{
-      setChats(doc.data());
+    const unSub = onSnapshot(doc(db,"userchats", currentUser.id), async (res) =>{
+      const items = res.data().chats;
+
+      const promises = items.map(async(item)=>{
+        const userDocRef = doc(db,"users", item.receiverId);
+        const userDocSnap = await getDoc(userDocRef);
+      })
+
+
     });
 
     return () =>{
