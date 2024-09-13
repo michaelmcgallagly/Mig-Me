@@ -16,9 +16,15 @@ export default function ChatList() {
       const promises = items.map(async(item)=>{
         const userDocRef = doc(db,"users", item.receiverId);
         const userDocSnap = await getDoc(userDocRef);
-      })
 
+        const user = userDocSnap.data();
 
+        return {...item, user};
+      });
+
+      const chatData = await Promise.all(promises);
+
+      setChats(chatData.sort((a,b)=> b.updatedAt -a.updatedAt));//allows the sort of chats to display most recent first
     });
 
     return () =>{
