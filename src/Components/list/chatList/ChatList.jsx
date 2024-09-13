@@ -2,12 +2,16 @@ import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useUserStore } from "../../../lib/userStore"
 import "./chatList.css"
 import { db } from "../../../lib/firebase";
+import {useState,useEffect} from "react"
+import AddUser from ".././userSearch/UserSearch.jsx";
+
 
 export default function ChatList() {
 
   const [chats,setChats] = useState([]);
+  const [addMode, setAddMode] = useState(false);
 
-  const currentUser = useUserStore();
+  const {currentUser} = useUserStore();
 
   useEffect(() =>{
     const unSub = onSnapshot(doc(db,"userchats", currentUser.id), async (res) =>{
@@ -39,7 +43,7 @@ export default function ChatList() {
                 <i className="fa-solid fa-magnifying-glass"></i>
                  <input type="text" placeholder="Search" className="bg-transparent border-none outline-none text-white placeholder-white flex-1"/>
             </div>
-         <i className="fa-solid fa-plus cursor-pointer"></i>
+         <i className={addMode ? "fa-solid fa-minus cursor-pointer" : "fa-solid fa-plus cursor-pointer"} onClick={()=> setAddMode((prev)=> !prev)}></i>
 
         </div>
 
@@ -56,7 +60,7 @@ export default function ChatList() {
 
       
 
-
+        {addMode &&  <AddUser/>}
     </div>
   )
 }
