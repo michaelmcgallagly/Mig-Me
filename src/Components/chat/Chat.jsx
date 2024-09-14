@@ -73,7 +73,7 @@ const sendMessage = async ()=>{
         console.log(err);
     }
 
-    
+   
 }
 
 
@@ -91,9 +91,9 @@ const sendMessage = async ()=>{
         <div className="p-5 flex-1 flex overflow-scroll flex-col gap-5 overflow-x-hidden chat">
             
             {chat?.messages?.map((message)=>(
-                <div className="message own" key={message?.createdAt}>
+                <div className={message.senderId === currentUser?.id ? "message own" : "message"} key={message?.createdAt}>
                 <div className="flex-1 flex flex-col gap-2">
-                    <p className="p-5 bg-[#8c52ff] rounded-lg">
+                    <p className={message.senderId === currentUser?.id ?"p-5 bg-[#8c52ff] rounded-lg message-text": "p-5 bg-[#ff5757] rounded-lg message-text"}>
                     {message.text}
                      </p>
                     

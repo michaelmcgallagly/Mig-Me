@@ -7,10 +7,17 @@ export const doFetchChats = create((set) => ({
     changeChat:(chatId,user)=>{
         const currentUser = useUserStore.getState().currentUser;
 
-        set({
-            chatId,
-            user
-        })
+        if (!chatId) {
+            set({
+              chatId: null,
+              user: null,
+            });
+          } else {
+            set({
+              chatId,
+              user,
+            });
+          }
     }
 
    

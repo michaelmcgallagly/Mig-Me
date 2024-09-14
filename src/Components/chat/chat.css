@@ -20,9 +20,11 @@
 
 .message{
 
-    max-width: 70%;
+    max-width: 40%;
     display: flex;
     gap: 20px;
+    word-wrap:break-word;
+    white-space:pre-wrap;
 
     &.own{
         align-self: flex-end;
