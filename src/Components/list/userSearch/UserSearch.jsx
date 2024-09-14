@@ -46,7 +46,16 @@ export default function UserSearch() {
                 chats:arrayUnion({
                     chatId: newChatRef.id,
                     lastMessage:"",
-                    recieverId: currentUser.id,
+                    receiverId: currentUser.id,
+                    updatedAt: Date.now()
+                }),
+            })
+
+            await updateDoc(doc(userChatsRef,currentUser.id),{
+                chats:arrayUnion({
+                    chatId: newChatRef.id,
+                    lastMessage:"",
+                    receiverId: user.id,
                     updatedAt: Date.now()
                 }),
             })
