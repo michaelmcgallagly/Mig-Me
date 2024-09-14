@@ -49,9 +49,9 @@ export default function ChatList() {
 
         {chats.map((chat)=>(
           <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#D5A9A9]" key={chat.chatId}>
-          <img src="https://static.vecteezy.com/system/resources/previews/004/511/281/original/default-avatar-photo-placeholder-profile-picture-vector.jpg" alt="user profile picture" className="w-12 h-12 rounded-full object-cover"/>
+          <img src={chat.user.avatar ||"https://static.vecteezy.com/system/resources/previews/004/511/281/original/default-avatar-photo-placeholder-profile-picture-vector.jpg"} alt="user profile picture" className="w-12 h-12 rounded-full object-cover"/>
           <div className="flex flex-col gap-2">
-            <span>Jane Doe</span>
+            <span>{chat.user.username}</span>
             <p className="font-light text-sm">{chat.lastMessage}</p>
           </div>
         </div>
