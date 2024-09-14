@@ -81,7 +81,7 @@ export default function ChatList() {
           <img src={chat.user.avatar ||"https://static.vecteezy.com/system/resources/previews/004/511/281/original/default-avatar-photo-placeholder-profile-picture-vector.jpg"} alt="user profile picture" className="w-12 h-12 rounded-full object-cover"/>
           <div className="flex flex-col gap-2">
             <span>{chat.user.username}</span>
-            <p className="font-light text-sm">{chat.lastMessage}</p>
+            <p className="font-light text-sm">{chat.lastMessage.length > 20 ? `${chat.lastMessage.slice(0, 20)}...` : chat.lastMessage}</p>
           </div>
         </div>
         ))}

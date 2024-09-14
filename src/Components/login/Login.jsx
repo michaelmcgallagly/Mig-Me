@@ -46,7 +46,9 @@ export default function Login() {
             console.log(err);
             toast.error(err.message);
         } finally{
+            window.location.reload()
             setLoading(false);
+           
         }
 
     };
@@ -67,7 +69,10 @@ export default function Login() {
             toast.error(err.message);
         }
         finally{
+            window.location.reload()
             setLoading(false);
+            
+
         }
     }
 

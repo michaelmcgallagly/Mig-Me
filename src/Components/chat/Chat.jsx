@@ -5,7 +5,10 @@ import { db } from "../../lib/firebase"
 import { doFetchChats } from "../../lib/fetchChats";
 import { useUserStore } from "../../lib/userStore";
 
-
+function wrapText(text, maxLength) {
+    const regex = new RegExp(`(.{1,${maxLength}})`, 'g');
+    return text.match(regex).join(' ');
+  }
 
 export default function Chat() {
     const [chat,setChat] = useState();
@@ -81,9 +84,9 @@ const sendMessage = async ()=>{
     <div className="flex-grow flex flex-col h-full border-l border-r border-[#D5A9A9]">
         <div className="p-5 flex items-center justify-between border-b border-[#D5A9A9]" >
             <div className="flex items-center gap-5">
-                <img src="https://static.vecteezy.com/system/resources/previews/004/511/281/original/default-avatar-photo-placeholder-profile-picture-vector.jpg" alt="user profile picture" className="w-12 h-12 rounded-full object-cover"/>
+                <img src={user?.avatar} alt="user profile picture" className="w-12 h-12 rounded-full object-cover"/>
                 <div className="flex flex-col gap-2">
-                    <span>Jane Doe</span>                    
+                    <span>{user?.username}</span>                    
                 </div>
             </div>
         </div>
@@ -93,8 +96,8 @@ const sendMessage = async ()=>{
             {chat?.messages?.map((message)=>(
                 <div className={message.senderId === currentUser?.id ? "message own" : "message"} key={message?.createdAt}>
                 <div className="flex-1 flex flex-col gap-2">
-                    <p className={message.senderId === currentUser?.id ?"p-5 bg-[#8c52ff] rounded-lg message-text": "p-5 bg-[#ff5757] rounded-lg message-text"}>
-                    {message.text}
+                    <p className={message.senderId === currentUser?.id ?"p-5 bg-[#8c52ff] rounded-lg break-words": "p-5 bg-[#ff5757] rounded-lg break-words"}>
+                    {wrapText(message.text, 20)}
                      </p>
                     
                 </div>

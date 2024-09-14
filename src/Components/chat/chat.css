@@ -20,7 +20,7 @@
 
 .message{
 
-    max-width: 40%;
+    max-width: 70%;
     display: flex;
     gap: 20px;
     word-wrap:break-word;
@@ -36,3 +36,6 @@
     }
 
 }
+
+
+
