@@ -80,6 +80,7 @@ export default function Login() {
     <>
     <div className="w-full h-full flex items-center gap-8">
         <div className="flex-1 flex flex-col items-center gap-5">
+            <img src="/logo1.png" alt="logo" />
             <h2>Sign In</h2>
             <form className="flex flex-col items-center justify-center gap-5" onSubmit={handleLogin}>
                 <input type="text" placeholder="E-Mail" name="email" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
@@ -87,6 +88,7 @@ export default function Login() {
                 <button className="w-[100%] p-5 border-none bg-[#8c52ff] color-white rounded-md font-bold" disabled={loading}>Sign In</button>
             </form>
         </div>
+        
         <div className="h-[80%] w-[2px] bg-[#D5A9A9]"></div>
         <div className="flex-1 flex flex-col items-center gap-5">
             <h2>Register Account</h2>
