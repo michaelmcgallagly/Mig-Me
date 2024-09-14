@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react"
 import "./chat.css"
-import { doc, onSnapshot } from "firebase/firestore"
+import { arrayUnion, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore"
 import { db } from "../../lib/firebase"
 import { doFetchChats } from "../../lib/fetchChats";
+import { useUserStore } from "../../lib/userStore";
 
 
 
 export default function Chat() {
     const [chat,setChat] = useState();
+    const [text,setText] = useState("");
 
-    const {chatId} = doFetchChats();
+    const {chatId, user} = doFetchChats();
+    const {currentUser} = useUserStore();
 
     useEffect(()=>{
         const unSub = onSnapshot(doc(db,"chats",chatId), (res)=>{
@@ -21,6 +24,57 @@ export default function Chat() {
         unSub();
     }
 },[chatId]);
+
+const sendMessage = async ()=>{
+    console.log("hi");
+
+    
+    if(!text === "")return;
+
+    console.log("hi");
+
+
+    try{
+        await updateDoc(doc(db,"chats",chatId),{
+            messages:arrayUnion({
+                senderId: currentUser.id,
+                text,
+                createdAt: new Date()
+            }),
+        });
+
+        const userIDs = [currentUser.id,user.id];
+
+        userIDs.forEach(async(id)=>{
+            const userChatsRef = doc(db,"userchats",id);
+            const userChatsSnapshot = await getDoc(userChatsRef);
+
+             if(userChatsSnapshot.exists()){
+                 const userChatsData = userChatsSnapshot.data();
+
+                 const chatIndex = userChatsData.chats.findIndex(
+                        (c) => c.chatId === chatId
+                );
+
+            userChatsData.chats[chatIndex].lastMessage = text;
+            userChatsData.chats[chatIndex].isSeen = id === currentUser.id ? true : false;
+            userChatsData.chats[chatIndex].updatedAt = Date.now();
+
+            await updateDoc(userChatsRef,{
+                chats: userChatsData.chats,
+            })
+
+        }
+     })
+
+        
+    }
+    catch(err){
+        console.log(err);
+    }
+
+    
+}
 
 
   return (
@@ -36,20 +90,22 @@ export default function Chat() {
 
         <div className="p-5 flex-1 flex overflow-scroll flex-col gap-5 overflow-x-hidden chat">
             
-
-            <div className="message own">
+            {chat?.messages?.map((message)=>(
+                <div className="message own" key={message?.createdAt}>
                 <div className="flex-1 flex flex-col gap-2">
                     <p className="p-5 bg-[#8c52ff] rounded-lg">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis et quam nostrum libero qui quas hic accusamus aperiam earum praesentium harum, necessitatibus asperiores expedita illo culpa voluptas repudiandae laudantium ex.
+                    {message.text}
                      </p>
-                    <span>1 mins ago</span>
+                    
                 </div>
             </div>
+            ))}
+            
 
         </div>
         <div className="p-5 flex items-center justify-between border-t border-[#D5A9A9] gap-5 mt-auto">
-            <input type="text" placeholder="Type a message..."    className="flex-1 bg-white border-none outline-none text-[#8c52ff] p-5 rounded-lg text-base"/>
-            <button className="py-2.5 px-5 border-none rounded cursor-pointer"><i className="fa-regular fa-paper-plane"></i></button>
+            <input onChange={e=> setText(e.target.value)} type="text" placeholder="Type a message..."    className="flex-1 bg-white border-none outline-none text-[#8c52ff] p-5 rounded-lg text-base"/>
+            <button className="py-2.5 px-5 border-none rounded cursor-pointer" onClick={sendMessage}><i className="fa-regular fa-paper-plane"></i></button>
 
         </div>
     

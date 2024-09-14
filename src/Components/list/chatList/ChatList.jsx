@@ -1,4 +1,4 @@
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { useUserStore } from "../../../lib/userStore"
 import "./chatList.css"
 import { db } from "../../../lib/firebase";
@@ -39,8 +39,29 @@ export default function ChatList() {
   },[currentUser.id]);
 
   const handleSelect = async (chat) =>{
+    const userChats = chats.map((item)=>{
+      const{user,...rest} = item
+      return rest
+    })
 
-    changeChat(chat.chatId, chat.user)
+    const chatIndex = userChats.findIndex(
+      (item) => item.chatId === chat.chatId
+    )
+
+    userChats[chatIndex].isSeen = true
+    
+    const userChatsRef = doc(db,"userchats",currentUser.id)
+
+    try{
+      await updateDoc(userChatsRef, {
+        chats: userChats,
+      })
+      changeChat(chat.chatId, chat.user)
+
+    }catch(err){
+      console.log(err)
+    }
+
 
   }
 
@@ -56,7 +77,7 @@ export default function ChatList() {
         </div>
 
         {chats.map((chat)=>(
-          <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#D5A9A9]" key={chat.chatId} onClick={()=> handleSelect(chat)}>
+          <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#D5A9A9]" key={chat.chatId} onClick={()=> handleSelect(chat)} style={{backgroundColor: chat?.isSeen ? "transparent" : "#ff5757"}}>
           <img src={chat.user.avatar ||"https://static.vecteezy.com/system/resources/previews/004/511/281/original/default-avatar-photo-placeholder-profile-picture-vector.jpg"} alt="user profile picture" className="w-12 h-12 rounded-full object-cover"/>
           <div className="flex flex-col gap-2">
             <span>{chat.user.username}</span>
