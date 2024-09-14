@@ -6,11 +6,13 @@ import Notification from './Components/notification/Notification'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useUserStore } from './lib/userStore'
 import { auth } from './lib/firebase'
+import { doFetchChats } from './lib/fetchChats'
 
 
 function App() {
 
   const {currentUser, isLoading, fetchUserInfo} = useUserStore()
+  const {chatId} = doFetchChats();
 
 
   useEffect(() => {
@@ -36,7 +38,7 @@ function App() {
   {currentUser ? (
     <>
       <List/>
-      <Chat/>
+      {chatId && <Chat/>}
     </> 
     ):(
       <Login/>

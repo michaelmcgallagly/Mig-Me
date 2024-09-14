@@ -4,6 +4,7 @@ import "./chatList.css"
 import { db } from "../../../lib/firebase";
 import {useState,useEffect} from "react"
 import UserSearch from ".././userSearch/UserSearch.jsx";
+import { doFetchChats } from "../../../lib/fetchChats.js";
 
 
 export default function ChatList() {
@@ -12,6 +13,7 @@ export default function ChatList() {
   const [addMode, setAddMode] = useState(false);
 
   const {currentUser} = useUserStore();
+  const {chatId, changeChat} = doFetchChats();
 
   useEffect(() =>{
     const unSub = onSnapshot(doc(db,"userchats", currentUser.id), async (res) =>{
@@ -34,7 +36,13 @@ export default function ChatList() {
     return () =>{
       unSub();
     }
-  },[currentUser.id])
+  },[currentUser.id]);
+
+  const handleSelect = async (chat) =>{
+
+    changeChat(chat.chatId, chat.user)
+
+  }
 
   return (
     <div className="chatList">
@@ -48,7 +56,7 @@ export default function ChatList() {
         </div>
 
         {chats.map((chat)=>(
-          <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#D5A9A9]" key={chat.chatId}>
+          <div className="flex items-center gap-5 p-5 cursor-pointer border-b border-[#D5A9A9]" key={chat.chatId} onClick={()=> handleSelect(chat)}>
           <img src={chat.user.avatar ||"https://static.vecteezy.com/system/resources/previews/004/511/281/original/default-avatar-photo-placeholder-profile-picture-vector.jpg"} alt="user profile picture" className="w-12 h-12 rounded-full object-cover"/>
           <div className="flex flex-col gap-2">
             <span>{chat.user.username}</span>
