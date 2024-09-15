@@ -2,7 +2,7 @@ import { useState } from "react";
 import {toast} from "react-toastify"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
-import {doc, setDoc} from "firebase/firestore"
+import {collection, doc, getDocs, query, setDoc, where} from "firebase/firestore"
 
 export default function Login() {
 
@@ -16,6 +16,13 @@ export default function Login() {
 
     const [selectedImage, setSelectedImage] = useState(presetProfilePictures[0]);
 
+    const checkUsernameExistsInDb = async (username) => {
+        const usersRef = collection(db,"users");
+        const q = query(usersRef,where("username", "==",username));
+        const querySnapShot = await getDocs(q);
+        return !querySnapShot.empty;
+    }
+
     const handleRegister = async e =>{
         e.preventDefault();
         setLoading(true);
@@ -24,24 +31,32 @@ export default function Login() {
         const {username,email,password} = Object.fromEntries(formData);
 
         try{
-            const res = await createUserWithEmailAndPassword(auth,email,password);
+            
+           const usernameExists = await checkUsernameExistsInDb(username); //
+           if(usernameExists) {
+            toast.error("Username already exists");
+            setLoading(false);
+            return;
+           }
 
-            const imgUrl = selectedImage;
-            await setDoc(doc(db,"users", res.user.uid),{
-                username,
-                email,
-                avatar:imgUrl,
-                id: res.user.uid
-            });
+           const res = await createUserWithEmailAndPassword(auth,email,password);
 
-            await setDoc(doc(db,"userchats", res.user.uid),{
-                chats:[]
-            });
-
-            toast.success("Successfully created user");
-
+           const imgUrl = selectedImage;
+           await setDoc(doc(db,"users", res.user.uid),{
+               username,
+               email,
+               avatar:imgUrl,
+               id: res.user.uid
+           });
+   
+           await setDoc(doc(db,"userchats", res.user.uid),{
+               chats:[]
+           });
+   
+           toast.success("Successfully created user");
 
         }
+
         catch(err){
             console.log(err);
             toast.error(err.message);
