@@ -7,6 +7,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { useUserStore } from './lib/userStore'
 import { auth } from './lib/firebase'
 import { doFetchChats } from './lib/fetchChats'
+import Placeholder from './Components/placeholder/Placeholder'
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
     <>
       <List/>
       {chatId && <Chat/>}
+      {!chatId && <Placeholder/>}
     </> 
     ):(
       <Login/>
