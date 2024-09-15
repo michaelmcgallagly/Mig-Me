@@ -37,11 +37,11 @@ function App() {
     height: 'clamp(400px, 90vh, 800px)',
  }}>
   {currentUser ? (
-    <>
+    <div className='flex flex-col md:flex-row h-full w-full'>
       <List/>
       {chatId && <Chat/>}
       {!chatId && <Placeholder/>}
-    </> 
+    </div>
     ):(
       <Login/>
     )}

@@ -1,13 +1,22 @@
 import { arrayUnion, collection, doc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useUserStore } from "../../../lib/userStore";
+
 
 export default function UserSearch() {
 
     const [user, setUser] = useState(null)
+    const [isAddingSelf, setIsAddingSelf] = useState(false)
 
     const {currentUser} = useUserStore()
+
+    
+    useEffect(() =>{
+        if(currentUser && user){
+            setIsAddingSelf(currentUser.id === user.id)
+        }
+    },[currentUser,user])
 
     const completeSearch = async e =>{
         e.preventDefault();
@@ -31,6 +40,9 @@ export default function UserSearch() {
     }
 
     const addUsersFromSearch = async ()=>{
+       
+        if(isAddingSelf) return;
+
         const chatRef = collection(db,"chats");
         const userChatsRef = collection(db,"userchats");
 
@@ -60,6 +72,7 @@ export default function UserSearch() {
                 }),
             })
 
+
         }catch(err){
             console.log(err)
         }
@@ -76,7 +89,7 @@ export default function UserSearch() {
                 <img className="w-12 h-12 rounded-full object-cover" src={user.avatar || "https://static.vecteezy.com/system/resources/previews/004/511/281/original/default-avatar-photo-placeholder-profile-picture-vector.jpg"} alt="User profile picture" />
                 <p>{user.username}</p>
             </div>
-            <button className="p-2 rounded-lg bg-transparent border-none cursor-pointer" onClick={addUsersFromSearch}><i className="fa-solid fa-square-plus"></i></button>
+            <button className="p-2 rounded-lg bg-transparent border-none cursor-pointer" onClick={addUsersFromSearch} disabled={ isAddingSelf}><i className="fa-solid fa-square-plus"></i></button>
         </div>}
     </div>
   )

@@ -24,12 +24,30 @@ export default function Login() {
         return !querySnapShot.empty;
     }
 
+    const checkUsernameLength = (username) => {
+        const maxLength = 15;
+
+        if(username.length > maxLength) {
+            toast.error(`Username must be no more than ${maxLength} characters long.`);
+            return false
+        }
+        else{
+            return true
+        }
+        
+    }
+
     const handleRegister = async e =>{
         e.preventDefault();
         setLoading(true);
         const formData = new FormData(e.target);
 
         const {username,email,password} = Object.fromEntries(formData);
+
+        if(!checkUsernameLength(username)){
+            setLoading(false);
+            return;
+        }
 
         try{
             
