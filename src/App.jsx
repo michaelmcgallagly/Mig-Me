@@ -37,19 +37,12 @@ function App() {
     height: 'clamp(400px, 90vh, 900px)',
  }}>
   {currentUser ? (
-<<<<<<< Updated upstream
     <div className='flex flex-col md:flex-row h-full w-full'>
       <List/>
       {chatId && <Chat/>}
       {!chatId && <Placeholder/>}
     </div>
-=======
-    <div className='flex flex-col md:flex-row'>
-      <List/>
-      {chatId && <Chat/>}
-      {!chatId && <Placeholder/>}
-    </div> 
->>>>>>> Stashed changes
+
     ):(
       <Login/>
     )}
