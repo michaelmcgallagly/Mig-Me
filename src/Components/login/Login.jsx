@@ -96,22 +96,22 @@ export default function Login() {
 
   return (
     <>
-    <div className="w-full h-full flex items-center gap-8 overflow-scroll overflow-x-hidden login">
-        <div className="flex-1 flex flex-col items-center gap-5">
+    <div className="w-full h-full flex flex-col md:flex-row items-center gap-8 overflow-scroll overflow-x-hidden login px-4 py-8 md:px-8">
+        <div className="flex-1 flex flex-col items-center gap-5 w-full md:w-auto">
             <img src="/logo1.png" alt="logo" />
             <h2>Sign In</h2>
-            <form className="flex flex-col items-center justify-center gap-5" onSubmit={handleLogin}>
-                <input type="text" placeholder="E-Mail" name="email" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
-                <input type="password" placeholder="Password" name="password" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
-                <button className="w-[100%] p-5 border-none bg-[#8c52ff] color-white rounded-md font-bold" disabled={loading}>Sign In</button>
+            <form className="flex flex-col items-center justify-center gap-5 w-full" onSubmit={handleLogin}>
+                <input type="text" placeholder="E-Mail" name="email" className="w-full p-5 border-none outline-none bg-white rounded-md text-[#8c52ff] max-w-[300px]"/>
+                <input type="password" placeholder="Password" name="password" className="w-full p-5 border-none outline-none bg-white rounded-md text-[#8c52ff] max-w-[300px]"/>
+                <button className="w-full p-5 border-none bg-[#8c52ff] color-white rounded-md font-bold max-w-[300px]" disabled={loading}>Sign In</button>
             </form>
         </div>
         
-        <div className="h-[80%] w-[2px] bg-[#D5A9A9]"></div>
-        <div className="flex-1 flex flex-col items-center gap-5">
+        <div className="h-[1px] md:h-[80%] w-full md:w-[2px] bg-[#D5A9A9] my-5 md:my-0"></div>
+        <div className="flex-1 flex flex-col items-center gap-5 w-full md:w-auto">
             <h2>Register Account</h2>
-                <form className="flex flex-col items-center justify-center gap-5" onSubmit={handleRegister}>
-                    <div className="flex gap-4">
+                <form className="flex flex-col items-center justify-center gap-5 w-full" onSubmit={handleRegister}>
+                    <div className="flex gap-4 overflow-x-auto">
                     {presetProfilePictures.map((image,index)=>(
                         <div key={index} className={`w-24 h-24 border-2 rounded-full overflow-hidden cursor-pointer ${selectedImage === image ? "border-[#8c52ff]" : "border-white"} hover:border-[#8c52ff]`}
                         onClick={()=> setSelectedImage(image)}
@@ -120,10 +120,10 @@ export default function Login() {
                         </div>
                     ))}
                     </div>
-                    <input type="text" placeholder="Username" name="username" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
-                    <input type="text" placeholder="E-Mail" name="email" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
-                    <input type="password" placeholder="Password" name="password" className="p-5 border-none outline-none bg-white rounded-md text-[#8c52ff]"/>
-                    <button className="w-[70%] p-5 border-none bg-[#8c52ff] color-white rounded-md font-bold" disabled={loading}>Sign Up</button>
+                    <input type="text" placeholder="Username" name="username" className="w-full p-5 border-none outline-none bg-white rounded-md text-[#8c52ff] max-w-[300px]"/>
+                    <input type="text" placeholder="E-Mail" name="email" className="w-full p-5 border-none outline-none bg-white rounded-md text-[#8c52ff] max-w-[300px]"/>
+                    <input type="password" placeholder="Password" name="password" className="w-full p-5 border-none outline-none bg-white rounded-md text-[#8c52ff] max-w-[300px]"/>
+                    <button className="w-full p-5 border-none bg-[#8c52ff] color-white rounded-md font-bold max-w-[300px]" disabled={loading}>Sign Up</button>
                 </form>
         </div>
     </div>
