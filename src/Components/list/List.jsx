@@ -1,4 +1,4 @@
-import UserInfo from "./userinfo/UserInfo.jsx"
+import UserInfo from "./userInfo/UserInfo.jsx"
 import ChatList from "./chatList/ChatList.jsx"
 
 
