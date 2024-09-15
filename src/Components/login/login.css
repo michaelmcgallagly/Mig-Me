@@ -1,0 +1,19 @@
+.login{
+    &::-webkit-scrollbar {
+    width: 8px;
+}
+
+&::-webkit-scrollbar-track {
+    background: rgba(17, 25, 40, 0.1);
+    border-radius: 10px;
+}
+
+&::-webkit-scrollbar-thumb {
+    background-color: #8c52ff;
+    border-radius: 10px;
+}
+
+&::-webkit-scrollbar-thumb:hover {
+    background-color: #8c52ff;
+}
+}

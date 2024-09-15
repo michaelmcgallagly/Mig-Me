@@ -3,6 +3,7 @@ import {toast} from "react-toastify"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../lib/firebase";
 import {collection, doc, getDocs, query, setDoc, where} from "firebase/firestore"
+import "./login.css"
 
 export default function Login() {
 
@@ -54,6 +55,7 @@ export default function Login() {
            });
    
            toast.success("Successfully created user");
+           window.location.reload()
 
         }
 
@@ -61,7 +63,7 @@ export default function Login() {
             console.log(err);
             toast.error(err.message);
         } finally{
-            window.location.reload()
+            
             setLoading(false);
            
         }
@@ -79,12 +81,13 @@ export default function Login() {
         try{
 
             await signInWithEmailAndPassword(auth,email, password)
+            window.location.reload()
+
 
         }catch(err){
             toast.error(err.message);
         }
         finally{
-            window.location.reload()
             setLoading(false);
             
 
@@ -93,7 +96,7 @@ export default function Login() {
 
   return (
     <>
-    <div className="w-full h-full flex items-center gap-8">
+    <div className="w-full h-full flex items-center gap-8 overflow-scroll overflow-x-hidden login">
         <div className="flex-1 flex flex-col items-center gap-5">
             <img src="/logo1.png" alt="logo" />
             <h2>Sign In</h2>
