@@ -29,13 +29,8 @@ export default function Chat() {
 },[chatId]);
 
 const sendMessage = async ()=>{
-    console.log("hi");
-
     
     if(!text === "")return;
-
-    console.log("hi");
-
 
     try{
         await updateDoc(doc(db,"chats",chatId),{
@@ -75,6 +70,7 @@ const sendMessage = async ()=>{
     catch(err){
         console.log(err);
     }
+
 
    
 }

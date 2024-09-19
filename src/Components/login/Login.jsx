@@ -129,7 +129,7 @@ export default function Login() {
         <div className="flex-1 flex flex-col items-center gap-5 w-full md:w-auto">
             <h2>Register Account</h2>
                 <form className="flex flex-col items-center justify-center gap-5 w-full" onSubmit={handleRegister}>
-                    <div className="flex gap-4 overflow-x-auto">
+                    <div className="flex gap-3 overflow-x-auto">
                     {presetProfilePictures.map((image,index)=>(
                         <div key={index} className={`w-24 h-24 border-2 rounded-full overflow-hidden cursor-pointer ${selectedImage === image ? "border-[#8c52ff]" : "border-white"} hover:border-[#8c52ff]`}
                         onClick={()=> setSelectedImage(image)}
