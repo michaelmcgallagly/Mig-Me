@@ -30,7 +30,7 @@ export default function Chat() {
 
 const sendMessage = async ()=>{
     
-    if(!text === "")return;
+    if(!text.trim())return;
 
     try{
         await updateDoc(doc(db,"chats",chatId),{
