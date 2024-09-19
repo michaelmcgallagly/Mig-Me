@@ -65,6 +65,7 @@ const sendMessage = async ()=>{
         }
      })
 
+     setText("");
         
     }
     catch(err){
