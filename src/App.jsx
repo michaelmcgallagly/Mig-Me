@@ -12,39 +12,38 @@ import Placeholder from './Components/placeholder/Placeholder'
 
 function App() {
 
-  const {currentUser, isLoading, fetchUserInfo} = useUserStore()
-  const {chatId} = doFetchChats();
+  const {currentUser, isLoading, fetchUserInfo} = useUserStore() //fetch the user information
+  const {chatId} = doFetchChats(); //fetch the current chat
 
 
   useEffect(() => {
     const unSub = onAuthStateChanged(auth,(user)=>{
-      fetchUserInfo(user?.uid);
+      fetchUserInfo(user?.uid); //fetch the user info from firestore using the userID
     });
 
     return ()=>{
-      unSub();
+      unSub(); //Cleanup
     }
   },[fetchUserInfo]);
 
-  console.log(currentUser);
-
+  //If app is loading data, display a loading message
   if(isLoading) return <div className='p-7 bg-[#FFFFFF] bg-opacity-50 backdrop-blur-lg backdrop-saturate-150 rounded-lg text-lg'>Loading...</div>
 
   return (
-<div className=" bg-[#FFFFFF] bg-opacity-50 backdrop-blur-lg backdrop-saturate-150 rounded-lg border border-white border-opacity-10 flex"
+<div className="bg-[#FFFFFF] bg-opacity-50 backdrop-blur-lg backdrop-saturate-150 rounded-lg border border-white border-opacity-10 flex"
  style={{
     width: 'clamp(300px, 90vw, 1200px)',
     height: 'clamp(400px, 90vh, 900px)',
  }}>
   {currentUser ? (
     <div className='flex flex-col md:flex-row h-full w-full'>
-      <List/>
-      {chatId && <Chat/>}
+      <List/> 
+      {chatId && <Chat/>} 
       {!chatId && <Placeholder/>}
     </div>
 
     ):(
-      <Login/>
+      <Login/> //if no user is logged in display login component, and above if there is a chat selected display that chat, if not display the placeholder component
     )}
   <Notification/>
 
