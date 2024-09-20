@@ -5,44 +5,50 @@ import { db } from "../../lib/firebase"
 import { doFetchChats } from "../../lib/fetchChats";
 import { useUserStore } from "../../lib/userStore";
 
+//function to wrap text in messages
 function wrapText(text, maxLength) {
-    const regex = new RegExp(`(.{1,${maxLength}})`, 'g');
-    return text.match(regex).join(' ');
+    const regex = new RegExp(`(.{1,${maxLength}})`, 'g'); //regex to break into chunks
+    return text.match(regex).join(' '); //join chunks with a space
   }
 
 export default function Chat() {
-    const [chat,setChat] = useState();
-    const [text,setText] = useState("");
+    const [chat,setChat] = useState(); //state to hold current chat
+    const [text,setText] = useState(""); //state to hold message text
 
-    const {chatId, user} = doFetchChats();
-    const {currentUser} = useUserStore();
+    const {chatId, user} = doFetchChats(); //get chat Id and user from state
+    const {currentUser} = useUserStore(); //get current user from Zustand store
 
+    //Listen for changes to the chat document in firestore
     useEffect(()=>{
         const unSub = onSnapshot(doc(db,"chats",chatId), (res)=>{
-            setChat(res.data())
+            setChat(res.data()) //update chat state with firestore data
         }
     );
 
     return()=>{
-        unSub();
+        unSub(); //cleanup
     }
 },[chatId]);
 
+//function to send messages
 const sendMessage = async ()=>{
     
-    if(!text.trim())return;
+    if(!text.trim())return; //prevent sending empty messages
 
     try{
+        //update chat doc with the new message
         await updateDoc(doc(db,"chats",chatId),{
             messages:arrayUnion({
-                senderId: currentUser.id,
-                text,
-                createdAt: new Date()
+                senderId: currentUser.id, //set senderId
+                text, //set the message text
+                createdAt: new Date() //set the date it was sent
             }),
         });
 
+        //array of user ids for chat updates
         const userIDs = [currentUser.id,user.id];
 
+        //update user chats with the last message
         userIDs.forEach(async(id)=>{
             const userChatsRef = doc(db,"userchats",id);
             const userChatsSnapshot = await getDoc(userChatsRef);
@@ -50,14 +56,17 @@ const sendMessage = async ()=>{
              if(userChatsSnapshot.exists()){
                  const userChatsData = userChatsSnapshot.data();
 
+                 //find index of the current chat
                  const chatIndex = userChatsData.chats.findIndex(
                         (c) => c.chatId === chatId
                 );
 
+            //update last message details
             userChatsData.chats[chatIndex].lastMessage = text;
             userChatsData.chats[chatIndex].isSeen = id === currentUser.id ? true : false;
             userChatsData.chats[chatIndex].updatedAt = Date.now();
 
+            //save updated chats back to  firestore
             await updateDoc(userChatsRef,{
                 chats: userChatsData.chats,
             })
@@ -68,7 +77,7 @@ const sendMessage = async ()=>{
         
     }
     catch(err){
-        console.log(err);
+        console.log(err); //catch and log errors
     }
 
 
