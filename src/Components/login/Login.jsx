@@ -7,28 +7,32 @@ import "./login.css"
 
 export default function Login() {
 
+    //array of profile pictures for users to choose from when they register
     const presetProfilePictures =[
         "https://firebasestorage.googleapis.com/v0/b/migme-be891.appspot.com/o/pfp1.png?alt=media&token=28d79abe-84d5-4a8e-8135-7083b7f2b14a",
         "https://firebasestorage.googleapis.com/v0/b/migme-be891.appspot.com/o/pfp2.png?alt=media&token=855c98a3-3490-4623-96ec-3035d1a1f28a",
         "https://firebasestorage.googleapis.com/v0/b/migme-be891.appspot.com/o/pfp3.png?alt=media&token=5e2198ab-b68e-4638-8a94-84251213bec8"
     ]
 
-    const [loading,setLoading] = useState(false);
+    const [loading,setLoading] = useState(false); //state to manage loading
 
-    const [selectedImage, setSelectedImage] = useState(presetProfilePictures[0]);
+    const [selectedImage, setSelectedImage] = useState(presetProfilePictures[0]); //state to store the selected profile pictures
 
+    //function to check is username already exists in the database
     const checkUsernameExistsInDb = async (username) => {
-        const usersRef = collection(db,"users");
-        const q = query(usersRef,where("username", "==",username));
-        const querySnapShot = await getDocs(q);
-        return !querySnapShot.empty;
+        const usersRef = collection(db,"users"); //reference the users collection
+        const q = query(usersRef,where("username", "==",username));//query to find if the username already exists
+        const querySnapShot = await getDocs(q); //get the snapshot
+        return !querySnapShot.empty; //return true if the username exists
     }
 
+    //function to check the username length
     const checkUsernameLength = (username) => {
-        const maxLength = 15;
+        const maxLength = 15; //set max length
 
         if(username.length > maxLength) {
-            toast.error(`Username must be no more than ${maxLength} characters long.`);
+            //if username is exceeds max length then send a notificaiton to the user
+            toast.error(`Username must be no more than ${maxLength} characters long.`); 
             return false
         }
         else{
@@ -37,13 +41,15 @@ export default function Login() {
         
     }
 
+    //handle registration when sign up form is submitted
     const handleRegister = async e =>{
-        e.preventDefault();
-        setLoading(true);
-        const formData = new FormData(e.target);
+        e.preventDefault(); //prevents the default form submission
+        setLoading(true); //sets loading to true whilst registration is ongoing
+        const formData = new FormData(e.target); //get form data
 
-        const {username,email,password} = Object.fromEntries(formData);
+        const {username,email,password} = Object.fromEntries(formData); //extract data from form
 
+        //check is username length is valid
         if(!checkUsernameLength(username)){
             setLoading(false);
             return;
@@ -51,15 +57,17 @@ export default function Login() {
 
         try{
             
-           const usernameExists = await checkUsernameExistsInDb(username); //
+           const usernameExists = await checkUsernameExistsInDb(username); //check if username already exists in the db
            if(usernameExists) {
-            toast.error("Username already exists");
+            toast.error("Username already exists"); //send error to user
             setLoading(false);
             return;
            }
 
+           //create user with email and password
            const res = await createUserWithEmailAndPassword(auth,email,password);
 
+           //save user data in firestore
            const imgUrl = selectedImage;
            await setDoc(doc(db,"users", res.user.uid),{
                username,
@@ -68,45 +76,49 @@ export default function Login() {
                id: res.user.uid
            });
    
+           //initialise the userchats for the new user
            await setDoc(doc(db,"userchats", res.user.uid),{
                chats:[]
            });
    
+           //send success message
            toast.success("Successfully created user");
            window.location.reload()
 
         }
 
         catch(err){
-            console.log(err);
-            toast.error(err.message);
+            toast.error(err.message); //display error message to user
         } finally{
             
+            //set loading to false
             setLoading(false);
            
         }
 
     };
 
+    //function to handle login 
     const handleLogin = async (e) => {
-        e.preventDefault();
-        setLoading(true);
+        e.preventDefault(); //prevent default form submission
+        setLoading(true); //set loading to true
 
-        const formData = new FormData(e.target);
+        const formData = new FormData(e.target); //fetch data from form
 
-        const {email,password} = Object.fromEntries(formData);
+        const {email,password} = Object.fromEntries(formData); //extract info from form
 
         try{
 
+            //sign in with email and password
             await signInWithEmailAndPassword(auth,email, password)
-            window.location.reload()
+            window.location.reload() //reload after successful login
 
 
         }catch(err){
-            toast.error(err.message);
+            toast.error(err.message); //send error message to user
         }
         finally{
-            setLoading(false);
+            setLoading(false); //set loading to false
             
 
         }
