@@ -1,4 +1,6 @@
 export default function Placeholder() {
+
+    //this component is a placeholder for when no chat is selected
     return (
         <div className="flex-grow flex flex-col h-full border-l border-r border-[#D5A9A9] max-h-[56vh] sm:max-h-[56vh] md:max-h-[90vh]">
             <div className="p-3 md:p-5 flex items-center justify-between border-b border-[#D5A9A9]" >
