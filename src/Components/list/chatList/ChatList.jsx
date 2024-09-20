@@ -9,63 +9,69 @@ import { doFetchChats } from "../../../lib/fetchChats.js";
 
 export default function ChatList() {
 
-  const [chats,setChats] = useState([]);
-  const [addMode, setAddMode] = useState(false);
-  const [input, setInput] = useState("");
+  const [chats,setChats] = useState([]); //state to hold list of chats
+  const [addMode, setAddMode] = useState(false); //state to toggle the adding of users
+  const [input, setInput] = useState(""); //state to manage searching
 
-  const {currentUser} = useUserStore();
-  const {chatId, changeChat} = doFetchChats();
+  const {currentUser} = useUserStore(); //get current logged-in user from Zustand store
+  const {chatId, changeChat} = doFetchChats(); //get chat id and function to change chat
 
+  //fetch chats for the current user and listen for updates
   useEffect(() =>{
     const unSub = onSnapshot(doc(db,"userchats", currentUser.id), async (res) =>{
-      const items = res.data().chats;
+      const items = res.data().chats; //get chats from firestore
 
+      //fetch user details for each chat
       const promises = items.map(async(item)=>{
         const userDocRef = doc(db,"users", item.receiverId);
-        const userDocSnap = await getDoc(userDocRef);
+        const userDocSnap = await getDoc(userDocRef); 
 
-        const user = userDocSnap.data();
+        const user = userDocSnap.data(); //get user data
 
-        return {...item, user};
+        return {...item, user}; //return chat item with user data
       });
 
+      // wait for all user data to be fetched and sort chats by updated time
       const chatData = await Promise.all(promises);
 
       setChats(chatData.sort((a,b)=> b.updatedAt -a.updatedAt));//allows the sort of chats to display most recent first
     });
 
     return () =>{
-      unSub();
+      unSub(); //cleanup
     }
   },[currentUser.id]);
 
+  //handle chat selection
   const handleSelect = async (chat) =>{
     const userChats = chats.map((item)=>{
-      const{user,...rest} = item
-      return rest
+      const{user,...rest} = item //destructure to remove user data
+      return rest //return rest of the chat data
     })
 
+    //find index of the selected chat
     const chatIndex = userChats.findIndex(
       (item) => item.chatId === chat.chatId
     )
 
-    userChats[chatIndex].isSeen = true
+    userChats[chatIndex].isSeen = true //set chat as seen
     
-    const userChatsRef = doc(db,"userchats",currentUser.id)
+    const userChatsRef = doc(db,"userchats",currentUser.id) //reference to the userchats
 
     try{
       await updateDoc(userChatsRef, {
-        chats: userChats,
+        chats: userChats, //update chats in firestore
       })
-      changeChat(chat.chatId, chat.user)
+      changeChat(chat.chatId, chat.user) //change current chat
 
     }catch(err){
-      console.log(err)
+      console.log(err) //catch and log error 
     }
 
 
   }
 
+  //filter chats based on search input
   const filteredChats = chats.filter(ch => ch.user.username.toLowerCase().includes(input.toLowerCase()))
 
   return (

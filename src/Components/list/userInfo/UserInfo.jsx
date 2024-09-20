@@ -3,7 +3,10 @@ import { useUserStore } from "../../../lib/userStore";
 
 export default function UserInfo() {
 
-  const {currentUser} = useUserStore();
+  
+  const {currentUser} = useUserStore(); //Zustand store to get the current logged-in user
+
+  //Component to display the logged-in users information
   return (
     <div className="p-3 md:p-5 flex items-center justify-between border-b border-[#D5A9A9]">
         <div className="flex items-center gap-5 md:gap-3">

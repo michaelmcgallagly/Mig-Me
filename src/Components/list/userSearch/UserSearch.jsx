@@ -6,75 +6,87 @@ import { useUserStore } from "../../../lib/userStore";
 
 export default function UserSearch() {
 
-    const [user, setUser] = useState(null)
-    const [isAddingSelf, setIsAddingSelf] = useState(false)
-
-    const {currentUser} = useUserStore()
+    const [user, setUser] = useState(null) //stores the searched user info
+    const [isAddingSelf, setIsAddingSelf] = useState(false) //boolean to check if user is adding themself
+ 
+    const {currentUser} = useUserStore() //Zustand store to get the current logged-in user
 
     
+    //check if user is adding themself
     useEffect(() =>{
         if(currentUser && user){
             setIsAddingSelf(currentUser.id === user.id)
         }
     },[currentUser,user])
 
+    //function to handle the user search form submission
     const completeSearch = async e =>{
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const username = formData.get("username");
+        e.preventDefault(); //prevent default form submission
+        const formData = new FormData(e.target); //fetch data from form
+        const username = formData.get("username"); //get the username from the form data
 
         try{
+            //reference the users collection in firestore
             const refUser = collection(db,"users");
 
+            //query the firestore for a user who matches the same username which was entered
             const q = query(refUser, where("username","==", username));
 
+            //complete the query
             const querySnapShot = await getDocs(q);
 
+            //if a user is found, update the user state with their data
             if(!querySnapShot.empty){
                 setUser(querySnapShot.docs[0].data());
             } 
 
         }catch(err){
-
+            console.log(err) //handle errors
         }
     }
 
+    //function to add the searched user to the current users chat list
     const addUsersFromSearch = async ()=>{
        
+        //prevent user from adding themself
         if(isAddingSelf) return;
 
-        const chatRef = collection(db,"chats");
-        const userChatsRef = collection(db,"userchats");
+        const chatRef = collection(db,"chats"); //reference chats collection
+        const userChatsRef = collection(db,"userchats"); //reference userchats collection
 
         try{
+            //create a new chat in the chats collection
             const newChatRef = doc(chatRef)
 
+            //set the initial data for the new chat session
             await setDoc(newChatRef, {
-                createdAt: serverTimestamp(),
-                messages: [],
+                createdAt: serverTimestamp(), // set timestamp of chat creation
+                messages: [], //initailise messages in the cat
             });
 
+            //update the searched users chat list with the new chat
             await updateDoc(doc(userChatsRef,user.id),{
                 chats:arrayUnion({
-                    chatId: newChatRef.id,
-                    lastMessage:"",
-                    receiverId: currentUser.id,
-                    updatedAt: Date.now()
+                    chatId: newChatRef.id, //id of new chat
+                    lastMessage:"", //no initial message
+                    receiverId: currentUser.id, //current user is the receiver
+                    updatedAt: Date.now() //set timestamp of the update
                 }),
             })
 
+            //updated the current users chat list with the new chat
             await updateDoc(doc(userChatsRef,currentUser.id),{
                 chats:arrayUnion({
-                    chatId: newChatRef.id,
-                    lastMessage:"",
-                    receiverId: user.id,
-                    updatedAt: Date.now()
+                    chatId: newChatRef.id, //id of new chat
+                    lastMessage:"", //no initial message
+                    receiverId: user.id, //the searched user is the receiver
+                    updatedAt: Date.now() //set timestamp of the update
                 }),
             })
 
 
         }catch(err){
-            console.log(err)
+            console.log(err) //error handling
         }
 
     }
